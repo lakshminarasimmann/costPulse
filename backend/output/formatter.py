@@ -42,8 +42,12 @@ def format_output(results_df: pd.DataFrame) -> pd.DataFrame:
 
 def save_output(output_df: pd.DataFrame, filename: str = "anomaly_report.csv"):
     """Save the formatted output to CSV."""
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    filepath = OUTPUT_DIR / filename
-    output_df.to_csv(filepath, index=False)
-    print(f"[Output] Saved {len(output_df)} rows to {filepath}")
-    return filepath
+    try:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        filepath = OUTPUT_DIR / filename
+        output_df.to_csv(filepath, index=False)
+        print(f"[Output] Saved {len(output_df)} rows to {filepath}")
+        return filepath
+    except Exception as e:
+        print(f"[Output] Notice: Could not write output to {OUTPUT_DIR}: {e}")
+        return None

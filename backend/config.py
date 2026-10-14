@@ -9,8 +9,16 @@ from pathlib import Path
 # ─── Project Paths ───────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 DATA_DIR = PROJECT_ROOT / "data"
-OUTPUT_DIR = PROJECT_ROOT / "output"
-CHROMA_DIR = PROJECT_ROOT / "backend" / "chroma_db"
+
+# Serverless read-only filesystem handling (Vercel, AWS Lambda)
+IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+if IS_SERVERLESS:
+    OUTPUT_DIR = Path("/tmp/output")
+    CHROMA_DIR = Path("/tmp/chroma_db")
+    os.environ.setdefault("HF_HOME", "/tmp/huggingface")
+else:
+    OUTPUT_DIR = PROJECT_ROOT / "output"
+    CHROMA_DIR = PROJECT_ROOT / "backend" / "chroma_db"
 
 SHIPMENT_FILE = DATA_DIR / "shipment_records.csv"
 CONTEXT_NOTES_FILE = DATA_DIR / "context_notes.csv"

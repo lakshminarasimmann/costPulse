@@ -35,8 +35,13 @@ def get_embedding_function():
 
 
 def get_chroma_client():
-    """Get a persistent ChromaDB client."""
-    return chromadb.PersistentClient(path=str(CHROMA_DIR))
+    """Get a persistent ChromaDB client, falling back to ephemeral client if read-only."""
+    try:
+        CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+        return chromadb.PersistentClient(path=str(CHROMA_DIR))
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"ChromaDB persistent client failed ({e}), falling back to EphemeralClient.")
+        return chromadb.EphemeralClient()
 
 
 def initialize_vector_store(notes_file=None) -> chromadb.Collection:

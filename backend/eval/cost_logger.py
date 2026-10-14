@@ -17,14 +17,15 @@ def save_cost_log(filename: str = "cost_log.json") -> dict:
 
     Returns the cost log dict.
     """
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     cost_log = get_cost_log()
-
-    filepath = OUTPUT_DIR / filename
-    with open(filepath, "w") as f:
-        json.dump(cost_log, f, indent=2)
-
-    print(f"\n[Cost Log] Saved to {filepath}")
+    try:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        filepath = OUTPUT_DIR / filename
+        with open(filepath, "w") as f:
+            json.dump(cost_log, f, indent=2)
+        print(f"\n[Cost Log] Saved to {filepath}")
+    except Exception as e:
+        print(f"\n[Cost Log] Notice: Could not save to {OUTPUT_DIR}: {e}")
     print(f"  Total LLM calls: {cost_log['total_calls']}")
     print(f"  Total input tokens: {cost_log['total_input_tokens']}")
     print(f"  Total output tokens: {cost_log['total_output_tokens']}")
