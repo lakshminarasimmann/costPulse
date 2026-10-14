@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: freighttiger-costpulse
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/summary
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LLM_BACKEND
+        value: local_mock
